@@ -25,6 +25,7 @@ const ManageData = async () => {
       <DataTable
         data={JSON.parse(JSON.stringify(parcels)) as ParcelType[]}
       />
+
     </div>
   );
 };

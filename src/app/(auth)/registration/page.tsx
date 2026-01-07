@@ -2,17 +2,46 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import registrationApi from './components/registrationApi';
+import { UserRegistration } from '@/types/user';
+import Swal from 'sweetalert2';
 
 const Registration = () => {
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const form =e.currentTarget;
+        const form = e.currentTarget;
         const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-        // const name = e.currentTarget.fullName.value;
-        console.log("submit", data);
+        // const data = Object.fromEntries(formData.entries());
+        const data: UserRegistration = {
+            fullName: formData.get("fullName") as string,
+            email: formData.get("email") as string,
+            photoUrl: formData.get("photoUrl") as string,
+            password: formData.get("password") as string
+        };
+
+        const result = JSON.parse(await registrationApi(data));
+        console.log(result)
+        if (result?.insertedId) {
+            form.reset();
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Your work has been saved",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Already have an account!",
+                footer: '<a href="#">Why do I have this issue?</a>'
+            });
+
+        }
     }
 
     return (
@@ -35,6 +64,7 @@ const Registration = () => {
                     </label>
                     <input
                         name="fullName"
+                        required
                         type="text"
                         placeholder="Your name"
                         className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:outline-none"
@@ -48,6 +78,7 @@ const Registration = () => {
                     </label>
                     <input
                         type="email"
+                        required
                         name="email"
                         placeholder="example@email.com"
                         className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:outline-none"
@@ -74,6 +105,7 @@ const Registration = () => {
                     </label>
                     <input
                         type="password"
+                        required
                         name="password"
                         placeholder="••••••••"
                         className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:outline-none"
@@ -82,8 +114,9 @@ const Registration = () => {
 
                 <Button
                     type="submit"
-                    className="w-full rounded-lg bg-green-600 py-2 text-white font-semibold hover:bg-green-700 transition"
+                    className="w-full rounded-lg bg-green-600 py-2 text-white font-semibold hover:bg-green-700 transition cursor-pointer"
                 >
+                    <span className="loader"></span>
                     Register
                 </Button>
             </form>

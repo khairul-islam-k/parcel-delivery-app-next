@@ -21,10 +21,10 @@ const Login = () => {
 
             <div className="text-center">
                 <h1 className="text-3xl font-bold text-gray-800">
-                    Create Account
+                    Signin Account
                 </h1>
                 <p className="text-gray-500 mt-2">
-                    Register to continue
+                    Login to continue
                 </p>
             </div>
 
@@ -60,15 +60,15 @@ const Login = () => {
                     type="submit"
                     className="w-full rounded-lg bg-green-600 py-2 text-white font-semibold hover:bg-green-700 transition"
                 >
-                    Register
+                    Log in
                 </Button>
 
             </form>
 
             <p className="text-center text-sm text-gray-500">
-                Already have an account?{" "}
-                <Link href="/login" className="text-green-600 hover:underline">
-                    Login
+                Don`t have any account?{" "}
+                <Link href="/registration" className="text-green-600 hover:underline">
+                    Registration
                 </Link>
             </p>
 
