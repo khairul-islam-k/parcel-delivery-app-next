@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { signOut, useSession } from 'next-auth/react';
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -14,11 +15,14 @@ const navLinks = [
 ];
 
 const Navbar = () => {
-    const [open, setOpen] = useState(false);
-    return (
-        <header className="sticky top-0 z-50 w-full border-b bg-white">
+  const [open, setOpen] = useState(false);
+  const { data } = useSession();
+  console.log("Navbar", data);
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-        
+
         {/* Left: Logo */}
         <Link href="/" className="text-xl font-bold text-primary">
           ParcelX
@@ -38,13 +42,20 @@ const Navbar = () => {
         </nav>
 
         {/* Right: Auth buttons (Desktop) */}
+
         <div className="hidden md:flex gap-3">
-          <Button className="bg-emerald-500 hover:bg-teal-500" asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/registration">Register</Link>
-          </Button>
+          {
+            data ? <Button className='cursor-pointer' onClick={() => signOut()}>LogOUt</Button> :
+
+              <>
+                <Button className="bg-emerald-500 hover:bg-teal-500" asChild>
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/registration">Register</Link>
+                </Button>
+              </>
+          }
         </div>
 
         {/* Mobile Menu Button */}
@@ -73,18 +84,23 @@ const Navbar = () => {
             ))}
 
             <div className="flex flex-col gap-2 pt-2">
-              <Button className="w-full bg-emerald-500" asChild>
-                <Link href="/login">Login</Link>
-              </Button>
-              <Button className="w-full" asChild>
-                <Link href="/registration">Register</Link>
-              </Button>
+              {
+                data ? <Button onClick={() => signOut()}>LogOut</Button> :
+                  <>
+                    <Button className="w-full bg-emerald-500" asChild>
+                      <Link href="/login">Login</Link>
+                    </Button>
+                    <Button className="w-full" asChild>
+                      <Link href="/registration">Register</Link>
+                    </Button>
+                  </>
+              }
             </div>
           </nav>
         </div>
       )}
     </header>
-    );
+  );
 };
 
 export default Navbar;

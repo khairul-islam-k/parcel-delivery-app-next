@@ -39,7 +39,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/navbar/Navbar";
 import NextAuthSessionProvider from "@/providers/NextAuthSessionProvider";
 
 const inter = Inter({
@@ -59,12 +58,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <NextAuthSessionProvider>
         <body className={`${inter.variable} antialiased`}>
-          <Navbar />
+      <NextAuthSessionProvider>
           {children}
-        </body>
       </NextAuthSessionProvider>
+        </body>
     </html>
   );
 }
