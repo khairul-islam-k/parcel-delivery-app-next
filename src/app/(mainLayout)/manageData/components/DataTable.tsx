@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import { signIn, useSession } from 'next-auth/react';
 
 type Parcel = {
   _id: string;
@@ -17,6 +18,9 @@ type Parcel = {
 // };
 
 const DataTable = ({ data }: { data: Parcel[] }) => {
+
+  const session = useSession();
+  console.log(session);
 
   // const [parcels, setParcels] = useState<Parcel[]>(data);
 
@@ -44,6 +48,7 @@ const DataTable = ({ data }: { data: Parcel[] }) => {
   // };
   return (
     <div className="overflow-x-auto p-4">
+      <button onClick={() => signIn()}>Log in</button>
       <table className="min-w-full border border-gray-200 rounded-lg">
         <thead className="bg-gray-100">
           <tr>

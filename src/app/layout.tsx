@@ -40,6 +40,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/navbar/Navbar";
+import NextAuthSessionProvider from "@/providers/NextAuthSessionProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,10 +59,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
-        <Navbar />
-        {children}
-      </body>
+      <NextAuthSessionProvider>
+        <body className={`${inter.variable} antialiased`}>
+          <Navbar />
+          {children}
+        </body>
+      </NextAuthSessionProvider>
     </html>
   );
 }

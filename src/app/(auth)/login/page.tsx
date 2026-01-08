@@ -3,18 +3,41 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import React from 'react';
 import SocialLogin from './components/SocialLogin';
+import { signIn } from 'next-auth/react';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
+    const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-    
-            const form =e.currentTarget;
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-            // const name = e.currentTarget.fullName.value;
-            console.log("submit", data);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        // const name = e.currentTarget.fullName.value;
+        const result = await signIn("credentials", { email: data.email, password: data.password, redirect: false })
+
+        if (result?.ok) {
+            form.reset();
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Signin Successfully",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            router.push("/");
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Email or Password is wrong",
+                footer: '<a href="#">Why do I have this issue?</a>'
+            });
         }
+    }
 
     return (
         <div className="w-full max-w-md space-y-6">
@@ -73,7 +96,7 @@ const Login = () => {
             </p>
 
             {/* social login */}
-                            <SocialLogin></SocialLogin>
+            <SocialLogin></SocialLogin>
 
 
         </div>
