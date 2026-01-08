@@ -1,11 +1,33 @@
 "use client";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 // import { signIn } from "next-auth/react";
 import { FaGoogle, FaGithub } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function SocialLogin() {
-  const handleSocialLogin = (data:string) => {
-    console.log("social Login",data);
+  const { status } = useSession();
+  const router = useRouter();
+  console.log(status);
+  const handleSocialLogin = async (ProviderName: string) => {
+
+    const result = await signIn(ProviderName, { redirect: false });
+  
   }
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Signin Successfully",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      router.push("/");
+    } 
+  }, [status, router])
   return (
     <div className="space-y-3">
       {/* Google */}

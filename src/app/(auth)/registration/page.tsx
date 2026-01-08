@@ -6,6 +6,16 @@ import registrationApi from './components/registrationApi';
 import { UserRegistration } from '@/types/user';
 import Swal from 'sweetalert2';
 
+// export interface UserRegistration {
+//     provider: string;
+//     providerAccountId: string;
+//     role: string;
+//     fullName: string;
+//     email: string;
+//     image: string;
+//     password?: string;
+// }
+
 const Registration = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -17,12 +27,13 @@ const Registration = () => {
         const data: UserRegistration = {
             fullName: formData.get("fullName") as string,
             email: formData.get("email") as string,
-            photoUrl: formData.get("photoUrl") as string,
-            password: formData.get("password") as string
-        };
+            image: formData.get("image") as string,
+            password: formData.get("password") as string,
+            role: "user"
+        }; 
 
         const result = JSON.parse(await registrationApi(data));
-        console.log(result)
+        console.log(result);
         if (result?.insertedId) {
             form.reset();
             Swal.fire({
@@ -92,7 +103,7 @@ const Registration = () => {
                     </label>
                     <input
                         type="url"
-                        name="photoUrl"
+                        name="image"
                         placeholder="https://example.com/profile.jpg"
                         className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:outline-none"
                     />

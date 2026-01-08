@@ -17,7 +17,6 @@ const navLinks = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { data } = useSession();
-  console.log("Navbar", data);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white">

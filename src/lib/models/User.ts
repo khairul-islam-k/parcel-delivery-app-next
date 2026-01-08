@@ -2,12 +2,21 @@ import { model, models, Schema } from "mongoose";
 
 const UserSchema = new Schema(
     {
-        fullName: {type: String, required: true},
-        email: {type: String, required: true},
-        photoUrl: String,
-        password: {type: String, required: true}
+        provider: String,
+        providerAccountId: String,
+        fullName: { type: String, required: true },
+        email: { type: String, required: true },
+        image: String,
+        password: String,
+        role: {
+            type : String,
+            enum: ["user", "moderator", "admin"],
+            default: "user"
+        }
     },
-    {timestamps: true}
+    { timestamps: true }
 );
 
 export default models.User || model("User", UserSchema);
+
+    
