@@ -129,7 +129,7 @@
   width: 20px;
   aspect-ratio: 1;
   display:grid;
-  -webkit-mask: conic-gradient(from 15deg,#0000,#000);
+  -webkit-mask: conic-gradient(from 15deg,#0000,#000);/*#0000,#000*/
   animation: l26 1s infinite steps(12);
 }
 .loader,
@@ -137,9 +137,9 @@
 .loader:after{
   background:
     radial-gradient(closest-side at 50% 12.5%,
-     #f03355 96%,#0000) 50% 0/20% 80% repeat-y,
+     white 96%,#0000) 50% 0/20% 80% repeat-y,   /*#f03355*/
     radial-gradient(closest-side at 12.5% 50%,
-     #f03355 96%,#0000) 0 50%/80% 20% repeat-x;
+     white 96%,#0000) 0 50%/80% 20% repeat-x;  
 }
 .loader:before,
 .loader:after {

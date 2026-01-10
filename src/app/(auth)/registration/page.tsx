@@ -1,31 +1,25 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import registrationApi from './components/registrationApi';
 import { UserRegistration } from '@/types/user';
 import Swal from 'sweetalert2';
 
-// export interface UserRegistration {
-//     provider: string;
-//     providerAccountId: string;
-//     role: string;
-//     fullName: string;
-//     email: string;
-//     image: string;
-//     password?: string;
-// }
 
 const Registration = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        setIsLoading(true);
 
         const form = e.currentTarget;
         const formData = new FormData(form);
         // const data = Object.fromEntries(formData.entries());
         const data: UserRegistration = {
-            fullName: formData.get("fullName") as string,
+            name: formData.get("name") as string,
             email: formData.get("email") as string,
             image: formData.get("image") as string,
             password: formData.get("password") as string,
@@ -43,6 +37,7 @@ const Registration = () => {
                 showConfirmButton: false,
                 timer: 1500
             });
+            setIsLoading(false);
 
         } else {
             Swal.fire({
@@ -51,6 +46,8 @@ const Registration = () => {
                 text: "Already have an account!",
                 footer: '<a href="#">Why do I have this issue?</a>'
             });
+
+            setIsLoading(false);
 
         }
     }
@@ -74,7 +71,7 @@ const Registration = () => {
                         Name
                     </label>
                     <input
-                        name="fullName"
+                        name="name"
                         required
                         type="text"
                         placeholder="Your name"
@@ -127,7 +124,9 @@ const Registration = () => {
                     type="submit"
                     className="w-full rounded-lg bg-green-600 py-2 text-white font-semibold hover:bg-green-700 transition cursor-pointer"
                 >
-                    <span className="loader"></span>
+                    {
+                        isLoading && <span className="loader"></span>
+                    }
                     Register
                 </Button>
             </form>

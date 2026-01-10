@@ -9,93 +9,108 @@ import bcrypt from "bcryptjs";
 
 
 
-const authOptions:NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET as string,
-    providers: [
-  CredentialsProvider({
-    // The name to display on the sign in form (e.g. 'Sign in with...')
-    name: 'Credentials',
-    
-    credentials: {
-      email: { label: "email", type: "email", placeholder: "email" },
-      password: { label: "Password", type: "password" }
-    },
-    async authorize(credentials, req) {
+  providers: [
+    CredentialsProvider({
+      // The name to display on the sign in form (e.g. 'Sign in with...')
+      name: 'Credentials',
 
-      await dbConnect();
-      
+      credentials: {
+        email: { label: "email", type: "email", placeholder: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials, req) {
 
-    const user = await User.findOne({email:credentials?.email});
+        await dbConnect();
 
-    if (!credentials?.password) {
-      return null;
-    }
 
-    // before validate
-    const isPassword = await bcrypt.compare(credentials?.password ,user?.password);
+        const user = await User.findOne({ email: credentials?.email });
 
-    // const user = {name : "khairul", email: "khairul@gmail.com"};
 
-      // If no error and we have user data, return it
-      if ( isPassword ) {
-        return user
+        if (!credentials?.password) {
+          return null;
+        }
+
+        // before validate
+        const isPassword = await bcrypt.compare(credentials?.password, user?.password);
+
+        // const user = {name : "khairul", email: "khairul@gmail.com"};
+
+        // If no error and we have user data, return it
+        if (isPassword) {
+          return {
+            id : user?._id.toString(),
+            name: user?.name,
+            email: user?.email,
+            image: user?.image,
+            role: user?.role
+          }
+        }
+        // Return null if user data could not be retrieved
+        return null
       }
-      // Return null if user data could not be retrieved
-      return null
-    }
-  }),
+    }),
     GoogleProvider({
-    clientId: process.env.GOOGLE_CLIENT_ID as string,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
-  }),
-  GitHubProvider({
-    clientId: process.env.GITHUB_ID as string,
-    clientSecret: process.env.GITHUB_SECRET as string
-  })
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string
+    })
 
-],
-pages : {
-  signIn: "/login"
-},
-callbacks: {
-    async signIn({ user, account}) {
+  ],
+  pages: {
+    signIn: "/login"
+  },
+  callbacks: {
+    async signIn({ user, account }) {
       if (account) {
         try {
-          const {name, email, image} = user;
-          const {provider, providerAccountId} = account;
+          const { name, email, image } = user;
+          const { provider, providerAccountId } = account;
+
+          console.log("provider",provider);
+
+          if (provider === "credentials") {
+            return true;
+          }
+
           await dbConnect();
-          const existingUser = await User.findOne({providerAccountId});
+          const existingUser = await User.findOne({ providerAccountId });
           
-          if (!existingUser && (provider === "google" || provider === "github")) {
+          if (!existingUser) {
+            console.log("provider inside")
             const result = await User.create({
               provider,
               providerAccountId,
               email,
-              fullName: name,
+              name,
               image,
               role: "user",
             });
-            
+
             if (provider === "google" || provider === "github") {
-              user.fullName = name as string;
+              user.name = name as string;
               user.role = "user";
             }
 
           } else {
-            user.fullName = existingUser?.fullName;
+            user.name = existingUser?.name;
             user.role = existingUser?.role;
           }
 
-        }catch(error) {
+        } catch (error) {
           console.log(error);
         }
       }
 
       return true
     },
-    async jwt({ token, user}) {
+    async jwt({ token, user }) {
       if (user) {
-        token.fullName = user.fullName;
+        token.name = user.name;
         token.email = user.email;
         token.image = user.image;
         token.role = user.role;
@@ -104,14 +119,14 @@ callbacks: {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.fullName = token.fullName;
+        session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.image;
         session.user.role = token.role;
       }
       return session
     }
-}
+  }
 
 
 }

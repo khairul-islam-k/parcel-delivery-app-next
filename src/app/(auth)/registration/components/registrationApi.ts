@@ -13,7 +13,6 @@ const registrationApi = async (data:UserRegistration) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     const newData = {password: hashPassword, ...res};
-    console.log(newData);
 
     const user = await User.findOne({email: data.email});
     if (user) {

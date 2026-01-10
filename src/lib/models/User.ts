@@ -4,7 +4,7 @@ const UserSchema = new Schema(
     {
         provider: String,
         providerAccountId: String,
-        fullName: { type: String, required: true },
+        name: { type: String, required: true },
         email: { type: String, required: true },
         image: String,
         password: String,
